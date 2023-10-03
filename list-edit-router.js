@@ -19,6 +19,18 @@ const tarea = [
   }
 ];
 
+function bodyValidation(req, res, next) {
+  const { description, isCompleted } = req.body;
+
+  if (!description || typeof isCompleted !== 'boolean') {
+    res.status(400).send('Invalid request body');
+  } else {
+    next();
+  }
+}
+
+router.use(bodyValidation);
+
 router.get('/', (req, res) => {
   res.json(tarea);
 });
@@ -64,4 +76,5 @@ router.put('/:id', (req, res) => {
     res.status(404).json({ message: 'Tarea no encontrada' });
   }
 });
+
 module.exports = router;

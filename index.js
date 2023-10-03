@@ -1,10 +1,11 @@
 const express = require('express');
-const editRouter = require('./list-edit-router'); 
-
+const editRouter = require('./list-edit-router');
 const app = express();
 
 app.use(express.json());
-app.use('/list', editRouter); 
+app.use('/list', editRouter);
+app.use('/list-edit-router', editRouter);
+
 const port = 3008;
 
 const tareas = [
@@ -25,9 +26,20 @@ const tareas = [
   }
 ];
 
+function methods(req, res, next) {
+  const method = req.method;
+  if (method === 'GET' || method === 'POST' || method === 'PUT') {
+    next();
+  } else {
+    res.status(405).send('Invalid http request');
+  }
+}
+
+app.use('/tareas', methods);
+
 app.get('/tareas', (req, res) => {
-  res.json(tareas); 
-}); 
+  res.json(tareas);
+});
 
 app.get('/tareas/completado', (req, res) => {
   const completadoTareas = tareas.filter(tarea => tarea.isCompleted);
@@ -42,4 +54,3 @@ app.get('/tareas/incompleto', (req, res) => {
 app.listen(port, () => {
   console.log(`Servidor Express corriendo en el puerto ${port}`);
 });
-
