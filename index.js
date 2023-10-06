@@ -1,6 +1,10 @@
 const express = require('express');
 const editRouter = require('./list-edit-router');
+const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
 const app = express();
+
+dotenv.config(); 
 
 app.use(express.json());
 app.use('/list', editRouter);
@@ -50,6 +54,40 @@ app.get('/tareas/incompleto', (req, res) => {
   const tareasIncompletas = tareas.filter(tarea => !tarea.isCompleted);
   res.json(tareasIncompletas);
 });
+
+// Ruta de autenticación
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  // Verifica las credenciales 
+  if (username === 'usuario1' && password === 'contraseña1') {
+    const payload = { username: 'usuario1' };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.json({ token });
+  } else {
+    res.status(401).json({ message: 'Credenciales incorrectas' });
+  }
+});
+
+// Ruta protegida
+app.get('/ruta-protegida', (req, res) => {
+  const token = req.header('Authorization');
+
+  if (!token) {
+    return res.status(401).json({ message: 'Token no proporcionado' });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: 'Token no válido' });
+    }
+
+    // Token es válido,
+    res.json({ message: 'Acceso concedido' });
+  });
+});
+
 
 app.listen(port, () => {
   console.log(`Servidor Express corriendo en el puerto ${port}`);
