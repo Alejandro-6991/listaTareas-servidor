@@ -31,7 +31,7 @@ function bodyValidation(req, res, next) {
 
 router.use(bodyValidation);
 
-router.get('/', (req, res) => {
+router.get('/t', (req, res) => {
   res.json(tarea);
 });
 
