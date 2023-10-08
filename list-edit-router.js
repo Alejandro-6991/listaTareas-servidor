@@ -3,20 +3,20 @@ const router = express.Router();
 
 const tarea = [
   {
-    "id": 1,
-    "description": "dormir",
-    "isCompleted": false
+    id: 1,
+    description: 'dormir',
+    isCompleted: false,
   },
   {
-    "id": 2,
-    "description": "hacer tramites bancarios",
-    "isCompleted": true
+    id: 2,
+    description: 'hacer tramites bancarios',
+    isCompleted: true,
   },
   {
-    "id": 3,
-    "description": "ir al supermercado",
-    "isCompleted": false
-  }
+    id: 3,
+    description: 'ir al supermercado',
+    isCompleted: false,
+  },
 ];
 
 function bodyValidation(req, res, next) {
@@ -31,13 +31,13 @@ function bodyValidation(req, res, next) {
 
 router.use(bodyValidation);
 
-router.get('/t', (req, res) => {
+router.get('/', (req, res) => {
   res.json(tarea);
 });
 
 router.get('/:id', (req, res) => {
   const id = parseInt(req.params.id);
-  const tareaEncontrada = tarea.find(item => item.id === id);
+  const tareaEncontrada = tarea.find((item) => item.id === id);
   if (tareaEncontrada) {
     res.json(tareaEncontrada);
   } else {
@@ -45,7 +45,7 @@ router.get('/:id', (req, res) => {
   }
 });
 
-router.post('/', (req, res) => {
+router.post('/crear', (req, res) => {
   const nuevaTarea = req.body;
   tarea.push(nuevaTarea);
   res.status(201).json(nuevaTarea);
@@ -53,7 +53,7 @@ router.post('/', (req, res) => {
 
 router.delete('/:id', (req, res) => {
   const tareaId = parseInt(req.params.id);
-  const tareaIndex = tarea.findIndex(item => item.id === tareaId);
+  const tareaIndex = tarea.findIndex((item) => item.id === tareaId);
 
   if (tareaIndex !== -1) {
     const tareaEliminada = tarea.splice(tareaIndex, 1);
@@ -67,7 +67,7 @@ router.put('/:id', (req, res) => {
   const tareaId = parseInt(req.params.id);
   const tareaActualizada = req.body;
 
-  const tareaIndex = tarea.findIndex(item => item.id === tareaId);
+  const tareaIndex = tarea.findIndex((item) => item.id === tareaId);
 
   if (tareaIndex !== -1) {
     tarea[tareaIndex] = { ...tarea[tareaIndex], ...tareaActualizada };
